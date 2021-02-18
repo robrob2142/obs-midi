@@ -462,9 +462,7 @@ void OBSController::play_pause_media_source(QString media_source)
 	case obs_media_state::OBS_MEDIA_STATE_PLAYING:
 		obs_source_media_play_pause(source, true);
 		break;
-	case obs_media_state::OBS_MEDIA_STATE_ENDED:
-		obs_source_media_restart(source);
-		break;
+	
 	}
 }
 
