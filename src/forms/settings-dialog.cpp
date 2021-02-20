@@ -40,11 +40,15 @@ PluginWindow::PluginWindow(QWidget *parent)
 		QAbstractItemView::SelectionMode::SingleSelection);
 	//Set Window Title
 	QString title;
-	title.append("OBS MIDI Settings -- Branch: ");
+	
 	title.append(GIT_BRANCH);
 	title.append(" -- Commit: ");
 	title.append(GIT_COMMIT_HASH);
+	blog(LOG_DEBUG, "OBS-MIDI Version -- Branch: %s", title.toStdString().c_str());
+	title.prepend("OBS MIDI Settings -- Branch: ");
 	this->setWindowTitle(title);
+	
+	
 	HideAllPairs();
 	//Connections for Device Tab
 	connect(ui->list_midi_dev, SIGNAL(currentTextChanged(QString)), this,
@@ -64,9 +68,9 @@ PluginWindow::PluginWindow(QWidget *parent)
 	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
 		this, SLOT(on_scene_change(QString)));
 
-	connect(ui->table_mapping, SIGNAL(cellClicked(int,int)), this,
+	connect(ui->table_mapping, SIGNAL(cellClicked(int, int)), this,
 		SLOT(edit_mapping()));
-	
+
 	/**************Connections to mappper****************/
 	connect(ui->btn_add, SIGNAL(clicked()), this, SLOT(add_new_mapping()));
 	connect(ui->btn_delete, SIGNAL(clicked()), this,
@@ -74,7 +78,6 @@ PluginWindow::PluginWindow(QWidget *parent)
 	connect(ui->tabWidget, SIGNAL(currentChanged(int)), this,
 		SLOT(tab_changed(int)));
 	this->ui->cb_obs_output_action->addItems(Utils::TranslateActions());
-	loadingdevices = true;
 }
 void PluginWindow::ToggleShowHide()
 {
@@ -87,7 +90,6 @@ void PluginWindow::ToggleShowHide()
 		ui->btn_Listen_many->setChecked(false);
 		ui->btn_Listen_one->setChecked(false);
 		HideAllPairs();
-
 	}
 }
 void PluginWindow::setCheck(bool x)
@@ -96,6 +98,8 @@ void PluginWindow::setCheck(bool x)
 }
 void PluginWindow::SetAvailableDevices()
 {
+	loadingdevices = true;
+
 	auto midiOutDevices = GetDeviceManager()->GetOutPortsList();
 	auto midiDevices = GetDeviceManager()->GetPortsList();
 	this->ui->list_midi_dev->clear();
@@ -117,7 +121,12 @@ void PluginWindow::SetAvailableDevices()
 		loadingdevices = true;
 		this->ui->outbox->clear();
 		this->ui->outbox->insertItems(0, midiOutDevices);
-		loadingdevices = false;
+		if (midiDevices.size() != 0) {
+			desconnect = connect(
+				ui->outbox, SIGNAL(currentTextChanged(QString)),
+				this, SLOT(select_output_device(QString)));
+		}
+		
 	}
 	if (starting) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -130,23 +139,23 @@ void PluginWindow::SetAvailableDevices()
 		this->ui->outbox->setCurrentIndex(0);
 		// Unix
 #endif
-		if (midiDevices.size() != 0) {
-			desconnect = connect(
-				ui->outbox, SIGNAL(currentTextChanged(QString)),
-				this, SLOT(select_output_device(QString)));
-		}
-		starting = false;
+		
+		
 	}
 	this->ui->list_midi_dev->setCurrentRow(-1);
 	this->ui->list_midi_dev->setCurrentRow(0);
 	on_device_select(ui->list_midi_dev->currentItem()->text());
-	
-	ui->outbox->setEnabled(
-		GetDeviceManager()
-			.get()
-			->GetMidiDeviceByName(
-				ui->list_midi_dev->currentItem()->text())
-			->isBidirectional());
+	if (this->ui->check_enabled->isChecked()) {
+
+		ui->outbox->setEnabled(
+			GetDeviceManager()
+				.get()
+				->GetMidiDeviceByName(
+					ui->list_midi_dev->currentItem()->text())
+				->isBidirectional());
+	}
+	loadingdevices = false;
+	starting = false;
 }
 void PluginWindow::select_output_device(QString selectedDeviceName)
 {
@@ -193,7 +202,8 @@ int PluginWindow::on_check_enabled_state_changed(int state)
 void PluginWindow::on_device_select(QString curitem)
 {
 	if (!starting) {
-
+		blog(LOG_DEBUG, "on_device_select %s",
+		     curitem.toStdString().c_str());
 		auto devicemanager = GetDeviceManager();
 		auto config = GetConfig();
 		MidiAgent *MAdevice =
@@ -201,26 +211,33 @@ void PluginWindow::on_device_select(QString curitem)
 		ui->tabWidget->setTabText(
 			1, QString("Configure - ").append(curitem));
 		// Pull info on if device is enabled, if so set true if not set false
-		if (MAdevice != NULL && MAdevice->isEnabled()) {
-			ui->check_enabled->setChecked(true);
-			ui->outbox->setEnabled(true);
-			ui->bidirectional->setEnabled(true);
-			ui->bidirectional->setChecked(
-				MAdevice->isBidirectional());
-			ui->outbox->setCurrentText(
-				MAdevice->get_midi_output_name());
-		} else {
-			ui->check_enabled->setChecked(false);
-			ui->outbox->setEnabled(false);
-			ui->bidirectional->setEnabled(false);
+		try {
+
+			if (MAdevice != NULL && MAdevice->isEnabled()) {
+				ui->check_enabled->setChecked(true);
+				ui->outbox->setEnabled(true);
+				ui->bidirectional->setEnabled(true);
+				ui->bidirectional->setChecked(
+					MAdevice->isBidirectional());
+				ui->outbox->setCurrentText(
+					MAdevice->get_midi_output_name());
+			} else {
+				ui->check_enabled->setChecked(false);
+				ui->outbox->setEnabled(false);
+				ui->bidirectional->setEnabled(false);
+			}
+			///HOOK up the Message Handler
+			connect(MAdevice,
+				SIGNAL(broadcast_midi_message(MidiMessage)),
+				this,
+				SLOT(handle_midi_message(
+					MidiMessage))); /// name, mtype, norc, channel
+			ui->mapping_lbl_device_name->setText(curitem);
+		} catch( ... ) {
+
 		}
-		///HOOK up the Message Handler
-		connect(MAdevice, SIGNAL(broadcast_midi_message(MidiMessage)),
-			this,
-			SLOT(handle_midi_message(
-				MidiMessage))); /// name, mtype, norc, channel
-		ui->mapping_lbl_device_name->setText(curitem);
 	}
+	
 }
 void PluginWindow::handle_midi_message(MidiMessage mess)
 {
@@ -228,7 +245,7 @@ void PluginWindow::handle_midi_message(MidiMessage mess)
 		if (ui->btn_Listen_one->isChecked() ||
 		    ui->btn_Listen_many->isChecked()) {
 			blog(1,
-			     "got midi message via gui, \n Device = %s \nMType = %s \n NORC : %i \n Channel: %i \n Value: %i",
+			     "got midi message via gui, \n Device = %s \n MType = %s \n NORC : %i \n Channel: %i \n Value: %i",
 			     mess.device_name.toStdString().c_str(),
 			     mess.message_type.toStdString().c_str(), mess.NORC,
 			     mess.channel, mess.value);
@@ -254,7 +271,6 @@ int PluginWindow::on_bid_enabled_state_changed(int state)
 	if (state) {
 		device->setBidirectional(state);
 		return 1;
-
 	} else {
 		device->setBidirectional(state);
 		return 0;
@@ -332,7 +348,8 @@ void PluginWindow::ShowPair(Pairs Pair)
 	case Pairs::Filter:
 		ui->label_obs_output_filter->show();
 		ui->cb_obs_output_filter->show();
-		ui->cb_obs_output_filter->addItems(Utils::get_filter_names(ui->cb_obs_output_source->currentText()));
+		ui->cb_obs_output_filter->addItems(Utils::get_filter_names(
+			ui->cb_obs_output_source->currentText()));
 		ui->w_filter->show();
 		break;
 	case Pairs::Transition:
@@ -345,7 +362,8 @@ void PluginWindow::ShowPair(Pairs Pair)
 	case Pairs::Item:
 		ui->label_obs_output_item->show();
 		ui->cb_obs_output_item->show();
-		ui->cb_obs_output_item->addItems(Utils::GetSceneItemsList(ui->cb_obs_output_scene->currentText()));
+		ui->cb_obs_output_item->addItems(Utils::GetSceneItemsList(
+			ui->cb_obs_output_scene->currentText()));
 		ui->w_item->show();
 		break;
 	case Pairs::Audio:
@@ -379,7 +397,6 @@ void PluginWindow::HidePair(Pairs Pair)
 		ui->label_obs_output_scene->hide();
 		ui->cb_obs_output_scene->hide();
 		ui->cb_obs_output_scene->clear();
-
 		ui->w_scene->hide();
 		blog(LOG_DEBUG, "Hide Scene");
 		break;
@@ -488,8 +505,7 @@ void PluginWindow::HideEntry(ActionsClass::Actions Entry)
 }
 void PluginWindow::ShowAllActions()
 {
-	for (int i = 0; i < Utils::AllActions_raw.count(); i++)
-	{
+	for (int i = 0; i < Utils::AllActions_raw.count(); i++) {
 		ShowEntry(Utils::AllActions_raw.at(i));
 	}
 }
@@ -611,7 +627,7 @@ void PluginWindow::obs_actions_select(QString action)
 		case ActionsClass::Actions::Scrub_Media:
 			ShowPair(Pairs::Media);
 			break;
-		case ActionsClass::Actions::Toggle_Source_Visibility:{
+		case ActionsClass::Actions::Toggle_Source_Visibility: {
 			ShowPair(Pairs::Scene);
 			ShowPair(Pairs::Source);
 		} break;
@@ -718,7 +734,8 @@ void PluginWindow::add_new_mapping()
 
 	} else {
 		if (ui->sb_channel->value()) {
-			Utils::alert_popup("Can Not Map Channel 0. \nPlease Click Listen One or Listen Many to listen for MIDI Event to map");
+			Utils::alert_popup(
+				"Can Not Map Channel 0. \nPlease Click Listen One or Listen Many to listen for MIDI Event to map");
 		}
 		if (!verify_mapping()) {
 			Utils::alert_popup("Mapping Missing required variable");
@@ -893,18 +910,19 @@ bool PluginWindow::verify_mapping()
 		return true;
 	}
 }
-void PluginWindow::on_scene_change(QString newscene) {
+void PluginWindow::on_scene_change(QString newscene)
+{
 	if (ui->cb_obs_output_source->isVisible()) {
 		ui->cb_obs_output_source->clear();
 		ui->cb_obs_output_source->addItems(
 			Utils::get_source_names(newscene));
 	}
 }
-void PluginWindow::on_source_change(QString newsource) {
+void PluginWindow::on_source_change(QString newsource)
+{
 	if (ui->cb_obs_output_filter->isVisible()) {
 		ui->cb_obs_output_filter->clear();
 		ui->cb_obs_output_filter->addItems(
 			Utils::get_filter_names(newsource));
 	}
-
 }
