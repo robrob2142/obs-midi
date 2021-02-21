@@ -278,7 +278,8 @@ obs_data_t *MidiAgent::GetData()
 	return data;
 }
 /*Handle OBS events*/
-void MidiAgent::handle_obs_event(const QString &eventType, const QString &eventData)
+void MidiAgent::handle_obs_event(const QString &eventType,
+				 const QString &eventData)
 {
 	if (!this->sending) {
 		MidiMessage *message = new MidiMessage();
@@ -439,7 +440,7 @@ void MidiAgent::handle_obs_event(const QString &eventType, const QString &eventD
 		this->sending = false;
 	}
 }
-void MidiAgent::send_message_to_midi_device(const MidiMessage& message)
+void MidiAgent::send_message_to_midi_device(const MidiMessage &message)
 {
 	std::unique_ptr<rtmidi::message> hello =
 		std::make_unique<rtmidi::message>();

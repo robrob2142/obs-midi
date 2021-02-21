@@ -17,6 +17,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 ////////////////////
 OBSController::OBSController(MidiHook *incoming_hook, int incoming_midi_value)
 {
+	if (incoming_hook == NULL)
+		return;
 	hook = incoming_hook;
 	midi_value = incoming_midi_value;
 	/*
