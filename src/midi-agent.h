@@ -71,7 +71,6 @@ public slots:
 signals:
 	void broadcast_midi_message(MidiMessage);
 	void do_obs_action(MidiHook *, int);
-
 private:
 	void send_message_to_midi_device(MidiMessage message);
 	rtmidi::midi_in midiin;

@@ -33,15 +33,20 @@ PluginWindow::PluginWindow(QWidget *parent)
 	: QDialog(parent, Qt::Dialog), ui(new Ui::PluginWindow)
 {
 	ui->setupUi(this);
-
 	//Set Window Title
 	set_title_window();
+	setup_actions_cb();
 	configure_table();
 	hide_all_pairs();
 	connect_ui_signals();
 	starting = false;
 }
-void PluginWindow::configure_table() {
+PluginWindow::~PluginWindow()
+{
+	delete ui;
+}
+void PluginWindow::configure_table()
+{
 	ui->table_mapping->setSelectionBehavior(
 		QAbstractItemView::SelectionBehavior::SelectRows);
 	ui->table_mapping->setSelectionMode(
@@ -100,7 +105,6 @@ void PluginWindow::ToggleShowHide()
 		hide_all_pairs();
 	}
 }
-
 void PluginWindow::load_devices()
 {
 	loadingdevices = true;
@@ -138,7 +142,7 @@ void PluginWindow::select_output_device(QString selectedDeviceName)
 		GetConfig()->Save();
 	}
 }
-void  PluginWindow::on_check_enabled_state_changed(int state)
+void PluginWindow::on_check_enabled_state_changed(int state)
 {
 	if (state == Qt::CheckState::Checked) {
 		auto selectedDeviceName =
@@ -195,7 +199,6 @@ void PluginWindow::on_device_select(QString curitem)
 				ui->bidirectional->setEnabled(true);
 				ui->bidirectional->setChecked(
 					MAdevice->isBidirectional());
-				
 				if (MAdevice->isBidirectional()) {
 					ui->outbox->setCurrentText(
 						MAdevice->get_midi_output_name());
@@ -251,10 +254,6 @@ void PluginWindow::on_bid_enabled_state_changed(int state)
 		device->setBidirectional(state);
 	}
 }
-PluginWindow::~PluginWindow()
-{
-	delete ui;
-}
 void PluginWindow::add_midi_device(const QString &name)
 {
 	blog(LOG_DEBUG, "Adding Midi Device %s", name.toStdString().c_str());
@@ -299,6 +298,11 @@ void PluginWindow::set_headers()
 	ui->table_mapping->horizontalHeaderItem(8)->setForeground(actioncolor);
 	ui->table_mapping->horizontalHeaderItem(9)->setForeground(actioncolor);
 	ui->table_mapping->horizontalHeaderItem(10)->setForeground(actioncolor);
+}
+void PluginWindow::setup_actions_cb()
+{
+	ui->cb_obs_output_action->clear();
+	ui->cb_obs_output_action->addItems(Utils::TranslateActions());
 }
 void PluginWindow::show_pair(Pairs Pair)
 {
@@ -821,7 +825,6 @@ void PluginWindow::load_table()
 		}
 	}
 }
-
 void PluginWindow::delete_mapping()
 {
 	if (ui->table_mapping->rowCount() > 0) {

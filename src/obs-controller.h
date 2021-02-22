@@ -1,20 +1,16 @@
 /*
 obs-midi
-
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>
 */
-
 #pragma once
 #if __has_include(<obs-frontend-api.h>)
 #include <obs-frontend-api.h>
@@ -25,11 +21,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "utils.h"
 #include "obs-midi.h"
 #include "qobject.h"
-
 class OBSController : public QObject {
 	Q_OBJECT
 	// BUTTON ACTIONS
-
 public:
 	OBSController(MidiHook *incoming_midi_hook, int incoming_midi_value);
 	~OBSController();
@@ -76,7 +70,6 @@ private:
 	void EnableSourceFilter();
 	void DisableSourceFilter();
 	void ToggleSourceFilter();
-
 	// CC ACTIONS
 	void SetVolume();
 	void SetSyncOffset();

@@ -21,7 +21,6 @@ class PluginWindow : public QDialog {
 public:
 	PluginWindow(QWidget *parent);
 	~PluginWindow();
-
 signals:
 	void changed(obs_data_t *change);
 private Q_SLOTS:
@@ -63,7 +62,7 @@ private:
 	void hide_all_pairs();
 	void add_midi_device(const QString &Name);
 	void set_headers();
-	
+	void setup_actions_cb();
 	void set_configure_title(const QString &title);
 	void connect_midi_message_handler();
 	bool map_exists();

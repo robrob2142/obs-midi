@@ -164,9 +164,9 @@ OBSController::OBSController(MidiHook *incoming_hook, int incoming_midi_value)
 		this->ToggleSourceVisibility();
 		break;
 	default:
-		blog(LOG_DEBUG, "Action %s Does not exist",incoming_hook->action.toStdString().c_str());
+		blog(LOG_DEBUG, "Action %s Does not exist",
+		     incoming_hook->action.toStdString().c_str());
 		break;
-		
 	};
 	this->deleteLater();
 }

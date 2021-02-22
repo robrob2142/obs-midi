@@ -272,7 +272,6 @@ typedef struct MidiMessage {
 	MidiMessage get() { return (MidiMessage) * this; }
 } MidiMessage;
 Q_DECLARE_METATYPE(MidiMessage);
-
 /*
  * Midi Hook Class
 */

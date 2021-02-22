@@ -1,7 +1,5 @@
-
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
-
 #include <iostream>
 #include <obs-module.h>
 #if __has_include(<obs-frontend-api.h>)
@@ -16,9 +14,7 @@
 #include <map>
 #include <iostream>
 #include <utility>
-
 #include "obs-midi.h"
-
 #include "src/forms/settings-dialog.h"
 #include "config.h"
 #include "device-manager.h"
@@ -26,19 +22,16 @@
 #include "midi-agent.h"
 #include "events.h"
 using namespace std;
-
 void ___source_dummy_addref(obs_source_t *) {}
 void ___sceneitem_dummy_addref(obs_sceneitem_t *) {}
 void ___data_dummy_addref(obs_data_t *) {}
 void ___data_array_dummy_addref(obs_data_array_t *) {}
 void ___output_dummy_addref(obs_output_t *) {}
-
 void ___data_item_dummy_addref(obs_data_item_t *) {}
 void ___data_item_release(obs_data_item_t *dataItem)
 {
 	obs_data_item_release(&dataItem);
 }
-
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE("obs-midi", "en-US")
 ConfigPtr _config;
@@ -50,10 +43,8 @@ bool obs_module_load(void)
 	qRegisterMetaType<MidiMessage>();
 	// Device Manager Setup
 	_deviceManager = DeviceManagerPtr(new DeviceManager());
-
 	// Config Setup
 	_config = ConfigPtr(new Config());
-
 	// Signal Router Setup
 	_eventsSystem = eventsPtr(new events(_deviceManager));
 	_config->Load();
@@ -65,30 +56,23 @@ bool obs_module_load(void)
 		(QAction *)obs_frontend_add_tools_menu_qaction(menuActionText);
 	QObject::connect(menuAction, SIGNAL(triggered()), plugin_window,
 			 SLOT(ToggleShowHide()));
-
-
 	return true;
 }
-
 void obs_module_unload()
 {
-
 	_config.reset();
 	_deviceManager.reset();
 	_eventsSystem.reset();
 	blog(LOG_DEBUG, "goodbye!");
 }
-
 ConfigPtr GetConfig()
 {
 	return _config;
 }
-
 DeviceManagerPtr GetDeviceManager()
 {
 	return _deviceManager;
 }
-
 eventsPtr GetEventsSystem()
 {
 	return _eventsSystem;

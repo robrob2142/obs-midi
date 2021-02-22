@@ -7,7 +7,6 @@ void ___sceneitem_dummy_addref(obs_sceneitem_t *);
 void ___data_dummy_addref(obs_data_t *);
 void ___data_array_dummy_addref(obs_data_array_t *);
 void ___output_dummy_addref(obs_output_t *);
-
 using OBSSourceAutoRelease =
 	OBSRef<obs_source_t *, ___source_dummy_addref, obs_source_release>;
 using OBSSceneItemAutoRelease =
@@ -21,7 +20,6 @@ using OBSDataArrayAutoRelease =
 using OBSOutputAutoRelease =
 	OBSRef<obs_output_t *, ___output_dummy_addref, obs_output_release>;
 void setup_ui();
-
 void ___data_item_dummy_addref(obs_data_item_t *);
 void ___data_item_release(obs_data_item_t *);
 using OBSDataItemAutoRelease =
@@ -38,6 +36,5 @@ static PluginWindow *plugin_window;
 ConfigPtr GetConfig();
 DeviceManagerPtr GetDeviceManager();
 eventsPtr GetEventsSystem();
-
 #define OBS_MIDI_VERSION "0.1"
 #define blog(level, msg, ...) blog(level, "[obs-midi] " msg, ##__VA_ARGS__)

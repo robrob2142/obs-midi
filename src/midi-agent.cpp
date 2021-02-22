@@ -57,9 +57,9 @@ MidiAgent::MidiAgent(const int &in_port, const int &out_port)
 */
 MidiAgent::MidiAgent(obs_data_t *midiData)
 {
-	//Sets the parent of this instance of MidiAgent to Device Manager
+	// Sets the parent of this instance of MidiAgent to Device Manager
 	this->setParent(GetDeviceManager().get());
-	//Sets the Midi Callback function
+	// Loads MidiAgent Variables, and MidiHooks, from config
 	this->Load(midiData);
 	set_callbacks();
 	if (enabled)
@@ -86,7 +86,6 @@ void MidiAgent::set_callbacks()
 			HandleError(error_type, error_message, this);
 		});
 }
-
 /* Loads information from OBS data. (recalled from Config)
  * This will not enable the MidiAgent or open the port. (and shouldn't)
  */
@@ -159,7 +158,6 @@ void MidiAgent::open_midi_input_port()
 void MidiAgent::open_midi_output_port()
 {
 	if (!midiout.is_port_open()) {
-
 		try {
 			midiout.open_port(output_port);
 		} catch (const rtmidi::midi_exception &error) {
