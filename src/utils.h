@@ -187,6 +187,8 @@ QStringList TranslateActions();
 QStringList get_scene_names();
 QStringList get_source_names(const QString &scene);
 QStringList get_filter_names(const QString &Source);
+obs_hotkey_t *FindHotkeyByName(QString name);
+QStringList get_hotkey_names();
 QStringList get_transition_names();
 QString untranslate(const QString &tstring);
 const QList<ActionsClass::Actions> AllActions_raw = {

@@ -36,17 +36,15 @@ private Q_SLOTS:
 	void ToggleShowHide();
 
 public slots:
-	int on_check_enabled_state_changed(int state);
-	int on_bid_enabled_state_changed(int state);
-	void on_device_select(QString curitem);
-
-	void select_output_device(QString item);
-	void handle_midi_message(MidiMessage mess);
-	void obs_actions_select(QString action);
+	int do_check_enabled_state_changed(int state);
+	int do_bid_enabled_state_changed(int state);
+	void do_device_select(const QString curitem);
+	void select_output_device(const QString &item);
+	void handle_midi_message(const MidiMessage &mess);
+	void obs_actions_select(const QString &action);
 	void ResetToDefaults();
-	void on_scene_change(QString newscene);
-	void on_source_change(QString newsource);
-
+	void do_scene_change(const QString &newscene);
+	void do_source_change(const QString &newsource);
 	void add_new_mapping();
 	void add_row_from_hook(MidiHook *hook);
 	void tab_changed(int i);
@@ -65,7 +63,7 @@ private:
 	void ShowPair(Pairs pair);
 	void HidePair(Pairs pair);
 	void HideAllPairs();
-	void add_midi_device(QString Name);
+	
 	void set_headers();
 	QStringList SceneList;
 	bool listening = false;
@@ -76,6 +74,7 @@ private:
 	bool verify_mapping();
 
 private:
+	bool editing = false;
 	QGridLayout *layout;
 	QStringList *items;
 	QString sceneName;

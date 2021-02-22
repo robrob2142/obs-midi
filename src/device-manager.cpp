@@ -157,10 +157,9 @@ QVector<MidiHook *> DeviceManager::GetMidiHooksByDeviceName(const QString &devic
 		auto device = GetMidiDeviceByName(deviceName);
 		if (device != NULL) {
 			return std::move(device->GetMidiHooks());
-		} else {
-			return {};
-		}
+		} 
 	}
+	return {};
 }
 
 /* Registers a midi device.

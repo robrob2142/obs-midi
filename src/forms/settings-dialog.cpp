@@ -48,21 +48,13 @@ PluginWindow::PluginWindow(QWidget *parent)
 	this->setWindowTitle(title);
 	HideAllPairs();
 	//Connections for Device Tab
-	connect(ui->list_midi_dev, SIGNAL(currentTextChanged(QString)), this,
-		SLOT(on_device_select(QString)));
-	connect(ui->check_enabled, SIGNAL(stateChanged(int)), this,
-		SLOT(on_check_enabled_state_changed(int)));
-	connect(ui->bidirectional, SIGNAL(stateChanged(int)), this,
-		SLOT(on_bid_enabled_state_changed(int)));
+	connect(ui->list_midi_dev, &QListWidget::currentTextChanged, this, &PluginWindow::do_device_select);
+	connect(ui->check_enabled, &QCheckBox::stateChanged, this, &PluginWindow::do_check_enabled_state_changed);
+	connect(ui->bidirectional, &QCheckBox::stateChanged, this, &PluginWindow::do_bid_enabled_state_changed);
 	//Connections for Configure Tab
-	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
-		this, SLOT(get_sources(QString)));
-	connect(ui->cb_obs_output_action, SIGNAL(currentTextChanged(QString)),
-		this, SLOT(obs_actions_select(QString)));
-	connect(ui->cb_obs_output_source, SIGNAL(currentTextChanged(QString)),
-		this, SLOT(on_source_change(QString)));
-	connect(ui->cb_obs_output_scene, SIGNAL(currentTextChanged(QString)),
-		this, SLOT(on_scene_change(QString)));
+	connect(ui->cb_obs_output_action, &QComboBox::currentTextChanged, this, &PluginWindow::obs_actions_select);
+	connect(ui->cb_obs_output_source, &QComboBox::currentTextChanged, this, &PluginWindow::do_source_change);
+	connect(ui->cb_obs_output_scene, &QComboBox::currentTextChanged, this, &PluginWindow::do_scene_change);
 	connect(ui->table_mapping, SIGNAL(cellClicked(int, int)), this,
 		SLOT(edit_mapping()));
 	/**************Connections to mappper****************/
@@ -72,6 +64,7 @@ PluginWindow::PluginWindow(QWidget *parent)
 	connect(ui->tabWidget, SIGNAL(currentChanged(int)), this,
 		SLOT(tab_changed(int)));
 	this->ui->cb_obs_output_action->addItems(Utils::TranslateActions());
+	Utils::get_hotkey_names();
 }
 void PluginWindow::ToggleShowHide()
 {
@@ -134,7 +127,7 @@ void PluginWindow::SetAvailableDevices()
 	}
 	this->ui->list_midi_dev->setCurrentRow(-1);
 	this->ui->list_midi_dev->setCurrentRow(0);
-	on_device_select(ui->list_midi_dev->currentItem()->text());
+	do_device_select(ui->list_midi_dev->currentItem()->text());
 	if (this->ui->check_enabled->isChecked()) {
 		ui->outbox->setEnabled(
 			GetDeviceManager()
@@ -146,7 +139,7 @@ void PluginWindow::SetAvailableDevices()
 	loadingdevices = false;
 	starting = false;
 }
-void PluginWindow::select_output_device(QString selectedDeviceName)
+void PluginWindow::select_output_device(const QString &selectedDeviceName)
 {
 	if (!loadingdevices) {
 		auto selectedDevice =
@@ -157,7 +150,7 @@ void PluginWindow::select_output_device(QString selectedDeviceName)
 		GetConfig()->Save();
 	}
 }
-int PluginWindow::on_check_enabled_state_changed(int state)
+int PluginWindow::do_check_enabled_state_changed(int state)
 {
 	if (state == Qt::CheckState::Checked) {
 		auto selectedDeviceName =
@@ -185,13 +178,13 @@ int PluginWindow::on_check_enabled_state_changed(int state)
 	}
 	//ui->outbox->setCurrentText(QString::fromStdString(device->GetOutName()));
 	GetConfig()->Save();
-	//on_device_select(ui->list_midi_dev->currentItem()->text());
+	//do_device_select(ui->list_midi_dev->currentItem()->text());
 	return state;
 }
-void PluginWindow::on_device_select(QString curitem)
+void PluginWindow::do_device_select(const QString curitem)
 {
 	if (!starting) {
-		blog(LOG_DEBUG, "on_device_select %s",
+		blog(LOG_DEBUG, "do_device_select %s",
 		     curitem.toStdString().c_str());
 		auto devicemanager = GetDeviceManager();
 		auto config = GetConfig();
@@ -225,7 +218,7 @@ void PluginWindow::on_device_select(QString curitem)
 		}
 	}
 }
-void PluginWindow::handle_midi_message(MidiMessage mess)
+void PluginWindow::handle_midi_message(const MidiMessage &mess)
 {
 	if (ui->tabWidget->currentIndex() == 1) {
 		if (ui->btn_Listen_one->isChecked() ||
@@ -249,7 +242,7 @@ void PluginWindow::handle_midi_message(MidiMessage mess)
 		}
 	}
 }
-int PluginWindow::on_bid_enabled_state_changed(int state)
+int PluginWindow::do_bid_enabled_state_changed(int state)
 {
 	auto device = GetDeviceManager()->GetMidiDeviceByName(
 		ui->list_midi_dev->currentItem()->text().toStdString().c_str());
@@ -485,7 +478,7 @@ void PluginWindow::ShowEntries(QList<ActionsClass::Actions> entrys)
 	}
 	listview->adjustSize();
 }
-void PluginWindow::obs_actions_select(QString action)
+void PluginWindow::obs_actions_select(const QString &action)
 {
 	if (!switching) {
 		HideAllPairs();
@@ -760,7 +753,7 @@ void PluginWindow::set_cell_colors(QColor color, QTableWidgetItem *item)
 {
 	QColor txcolor;
 	txcolor.black();
-	item->setBackgroundColor(txcolor);
+	item->setBackground(txcolor);
 	item->setForeground(color);
 }
 void PluginWindow::tab_changed(int i)
@@ -860,7 +853,7 @@ bool PluginWindow::verify_mapping()
 		return true;
 	}
 }
-void PluginWindow::on_scene_change(QString newscene)
+void PluginWindow::do_scene_change(const QString &newscene)
 {
 	if (ui->cb_obs_output_source->isVisible()) {
 		ui->cb_obs_output_source->clear();
@@ -868,7 +861,7 @@ void PluginWindow::on_scene_change(QString newscene)
 			Utils::get_source_names(newscene));
 	}
 }
-void PluginWindow::on_source_change(QString newsource)
+void PluginWindow::do_source_change(const QString &newsource)
 {
 	if (ui->cb_obs_output_filter->isVisible()) {
 		ui->cb_obs_output_filter->clear();

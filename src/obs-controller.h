@@ -38,7 +38,7 @@ private:
 	/**
 	* Variables
 	*/
-	MidiHook *hook;
+	MidiHook *hook=NULL;
 	int midi_value;
 
 private:

@@ -27,7 +27,7 @@ QString getBoundsNameFromType(obs_bounds_type type)
 	QString fallback = boundTypeNames.value(OBS_BOUNDS_NONE);
 	return boundTypeNames.value(type, fallback);
 }
-obs_bounds_type getBoundsTypeFromName(const QString& name)
+obs_bounds_type getBoundsTypeFromName(const QString &name)
 {
 	return boundTypeNames.key(name);
 }
@@ -66,7 +66,7 @@ bool Utils::is_number(const QString &s)
 		return false;
 	}
 }
-bool Utils::isJSon(const QString& val)
+bool Utils::isJSon(const QString &val)
 {
 	return (val.startsWith(QChar('[')) || val.startsWith(QChar('{')));
 }
@@ -217,7 +217,8 @@ obs_data_t *Utils::GetSceneItemData(obs_sceneitem_t *item)
 	}
 	return data;
 }
-obs_sceneitem_t *Utils::GetSceneItemFromName(obs_scene_t *scene, const QString &name)
+obs_sceneitem_t *Utils::GetSceneItemFromName(obs_scene_t *scene,
+					     const QString &name)
 {
 	if (!scene) {
 		return nullptr;
@@ -360,7 +361,7 @@ obs_source_t *Utils::GetTransitionFromName(const QString &searchName)
 	obs_frontend_source_list_free(&transition_list);
 	return foundTransition;
 }
-obs_scene_t *Utils::GetSceneFromNameOrCurrent(const QString& sceneName)
+obs_scene_t *Utils::GetSceneFromNameOrCurrent(const QString &sceneName)
 {
 	// Both obs_frontend_get_current_scene() and obs_get_source_by_name()
 	// increase the returned source's refcount
@@ -1038,7 +1039,7 @@ QString Utils::mtype_to_string(rtmidi::message_type mess)
 	}
 	return "ERROR";
 }
-QString Utils::get_midi_message_type(const rtmidi::message& message)
+QString Utils::get_midi_message_type(const rtmidi::message &message)
 {
 	switch (message.get_message_type()) {
 	case rtmidi::message_type::CONTROL_CHANGE:
@@ -1089,11 +1090,13 @@ QStringList Utils::TranslateActions()
 }
 QString Utils::translate_action(ActionsClass::Actions action)
 {
-	return std::move(QString(obs_module_text(ActionsClass::action_to_string(action).toStdString().c_str())));
+	return std::move(QString(obs_module_text(
+		ActionsClass::action_to_string(action).toStdString().c_str())));
 }
 QString Utils::untranslate(const QString &tstring)
 {
-	return std::move(ActionsClass::action_to_string(AllActions_raw.at(TranslateActions().indexOf(tstring))));
+	return std::move(ActionsClass::action_to_string(
+		AllActions_raw.at(TranslateActions().indexOf(tstring))));
 }
 void Utils::alert_popup(const QString &message)
 {
@@ -1138,4 +1141,43 @@ QStringList Utils::get_filter_names(const QString &Source)
 	obs_data_array_release(y);
 	obs_source_release(x);
 	return names;
+}
+obs_hotkey_t *Utils::FindHotkeyByName(QString name)
+{
+	struct current_search {
+		QString query;
+		obs_hotkey_t *result;
+	};
+	current_search search;
+	search.query = name;
+	search.result = nullptr;
+	obs_enum_hotkeys(
+		[](void *data, obs_hotkey_id id, obs_hotkey_t *hotkey) {
+			current_search *search =
+				reinterpret_cast<current_search *>(data);
+			const char *hk_name = obs_hotkey_get_name(hotkey);
+			if (hk_name == search->query) {
+				search->result = hotkey;
+				return false;
+			}
+			return true;
+		},
+		&search);
+	return search.result;
+}
+QStringList  Utils::get_hotkey_names()
+{
+	blog(LOG_DEBUG, "Get Hotkey Names");
+
+	QStringList search;
+	obs_enum_hotkeys(
+		[](void *data, obs_hotkey_id id, obs_hotkey_t *hotkey) {
+			QStringList *se = static_cast<QStringList *>(data);
+			const char *hk_name = obs_hotkey_get_name(hotkey);
+			se->append(hk_name);
+			blog(LOG_DEBUG, "Hotkey Name %s", hk_name);
+			return false;
+		},
+		static_cast<void *>(&search));
+	return search;
 }

@@ -66,7 +66,7 @@ bool obs_module_load(void)
 	QObject::connect(menuAction, SIGNAL(triggered()), plugin_window,
 			 SLOT(ToggleShowHide()));
 
-
+	Utils::get_hotkey_names();
 	return true;
 }
 
