@@ -269,31 +269,6 @@ PluginWindow::~PluginWindow()
 	disconnect(desconnect);
 	delete ui;
 }
-void PluginWindow::add_midi_device(QString name)
-{
-	blog(LOG_DEBUG, "Adding Midi Device %s", name.toStdString().c_str());
-	QTableWidgetItem *device_name = new QTableWidgetItem();
-	QTableWidgetItem *device_enabled = new QTableWidgetItem();
-	QTableWidgetItem *device_status = new QTableWidgetItem();
-	QTableWidgetItem *feedback_enabled = new QTableWidgetItem();
-	QTableWidgetItem *feedback_name = new QTableWidgetItem();
-	QTableWidgetItem *feedback_status = new QTableWidgetItem();
-	int rowcount = this->ui->table_mapping->rowCount();
-	this->ui->table_mapping->insertRow(rowcount);
-	device_name->setText(name);
-	device_enabled->setCheckState(Qt::Unchecked);
-	device_status->setText(QString("Disconnected"));
-	//device_status->setForeground("grey");
-	feedback_name->setText("");
-	feedback_enabled->setCheckState(Qt::Unchecked);
-	feedback_status->setText(QString("unset"));
-	this->ui->table_mapping->setItem(rowcount, 0, device_name);
-	this->ui->table_mapping->setItem(rowcount, 1, device_enabled);
-	this->ui->table_mapping->setItem(rowcount, 2, device_status);
-	this->ui->table_mapping->setItem(rowcount, 3, feedback_enabled);
-	this->ui->table_mapping->setItem(rowcount, 4, feedback_name);
-	this->ui->table_mapping->setItem(rowcount, 5, feedback_status);
-}
 void PluginWindow::set_headers()
 {
 	ui->table_mapping->setHorizontalHeaderLabels(
