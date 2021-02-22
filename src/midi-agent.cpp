@@ -33,13 +33,28 @@ using namespace std;
 ////////////////
 // MIDI AGENT //
 ////////////////
-MidiAgent::MidiAgent()
+/*
+*
+* Creates a new midi agent
+*
+*/
+MidiAgent::MidiAgent(const int &in_port, const int &out_port)
 {
 	this->setParent(GetDeviceManager().get());
-	midi_input_name = "Midi Device (uninit)";
-	midi_output_name = "Midi Out Device (uninit)";
+	set_input_port(in_port);
+	set_output_port(out_port);
+	set_enabled(true);
 	set_callbacks();
+	if (enabled)
+		open_midi_input_port();
+	if (bidirectional)
+		open_midi_output_port();
 }
+/*
+*
+* Creates a Midi Agent from the config file
+*
+*/
 MidiAgent::MidiAgent(obs_data_t *midiData)
 {
 	//Sets the parent of this instance of MidiAgent to Device Manager
@@ -51,6 +66,12 @@ MidiAgent::MidiAgent(obs_data_t *midiData)
 		open_midi_input_port();
 	if (bidirectional)
 		open_midi_output_port();
+}
+MidiAgent::~MidiAgent()
+{
+	clear_MidiHooks();
+	close_both_midi_ports();
+	midiin.cancel_callback();
 }
 void MidiAgent::set_callbacks()
 {
@@ -65,12 +86,7 @@ void MidiAgent::set_callbacks()
 			HandleError(error_type, error_message, this);
 		});
 }
-MidiAgent::~MidiAgent()
-{
-	clear_MidiHooks();
-	close_both_midi_ports();
-	midiin.cancel_callback();
-}
+
 /* Loads information from OBS data. (recalled from Config)
  * This will not enable the MidiAgent or open the port. (and shouldn't)
  */

@@ -154,12 +154,7 @@ QVector<MidiHook *> DeviceManager::GetMidiHooksByDeviceName(QString deviceName)
 */
 MidiAgent * DeviceManager::RegisterMidiDevice(int port, int outport)
 {
-	MidiAgent * midiA = new MidiAgent();
-	midiA->set_input_port(port);
-	midiA->set_output_port(outport);
-	midiA->open_midi_input_port();
-	midiA->open_midi_output_port();
-	midiA->set_enabled(true);
+	MidiAgent * midiA = new MidiAgent(port, outport);
 	midiAgents.push_back(midiA);
 	return midiA;
 }
