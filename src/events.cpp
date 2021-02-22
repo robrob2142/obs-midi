@@ -1001,6 +1001,7 @@ void events::OnSourceVolumeChange(void *param, calldata_t *data)
 	obs_data_set_string(fields, "sourceName", obs_source_get_name(source));
 	obs_data_set_double(fields, "volume", volume);
 	self->broadcastUpdate("SourceVolumeChanged", fields);
+
 }
 /**
  * A source has been muted or unmuted.
