@@ -40,7 +40,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "rpc/RpcEvent.h"
 #include "midi-agent.h"
 #include "obs-controller.h"
-
+#include "midi-response.h"
 
 class DeviceManager : public QObject
 {
@@ -63,6 +63,8 @@ public:
 	MidiAgent *RegisterMidiDevice(const int &port, const int &outport);
 
 	obs_data_array_t *GetData();
+
+	MidiMessage *send_to_message_handler(MidiHook *hook, const RpcEvent &event);
 
 private:
 	QMetaObject::Connection broadcast_connection;

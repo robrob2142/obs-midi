@@ -16,6 +16,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 
 #include "device-manager.h"
+
 #include "forms/settings-dialog.h"
 
 
@@ -181,4 +182,8 @@ obs_data_array_t *DeviceManager::GetData()
 	}
 
 	return data;
+}
+MidiMessage* DeviceManager::send_to_message_handler(MidiHook *hook, const RpcEvent &event) {
+	return MidiResponse(hook, event).get_message();
+
 }

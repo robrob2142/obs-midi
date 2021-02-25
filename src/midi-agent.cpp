@@ -345,8 +345,7 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 	QString eventType = event.updateType();
 	QString eventData = QString::fromStdString(obs_data_get_json(eventsData));
 
-	obs_data_release(additionalFields);
-	obs_data_release(eventsData);
+	
 
 	if (!this->sending) {
 		MidiMessage *message = new MidiMessage();
@@ -354,11 +353,7 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 		// ON EVENT TYPE Find matching hook, pull data from that hook, and do thing.
 		if (hook != NULL) {
 			if (eventType == QString("SourceVolumeChanged")) {
-				double vol = obs_data_get_double(data, "volume");
-				uint8_t newvol = Utils::mapper2(cbrt(vol));
-				message = hook->get_message_from_hook();
-				message->value = newvol;
-				this->send_message_to_midi_device(message->get());
+				this->send_message_to_midi_device((MidiMessage)*GetDeviceManager().get()->send_to_message_handler(hook, event));
 			} else if (eventType == QString("SwitchScenes")) {
 				message->message_type = "Note Off";
 				message->channel = hook->channel;
@@ -476,6 +471,8 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 	} else {
 		this->sending = false;
 	}
+	obs_data_release(additionalFields);
+	obs_data_release(eventsData);
 }
 void MidiAgent::send_message_to_midi_device(const MidiMessage &message)
 {
