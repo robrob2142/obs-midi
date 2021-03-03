@@ -42,9 +42,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "device-manager.h"
 #include "rpc/RpcEvent.h"
 
-
-class Events : public QObject
-{
+class Events : public QObject {
 	Q_OBJECT
 
 public:
@@ -124,6 +122,7 @@ private:
 
 	void OnStudioModeSwitched(bool enabled);
 	void OnPreviewSceneChanged();
+	void OnTBarValueChanged();
 
 	void OnExit();
 
@@ -140,7 +139,7 @@ private:
 	static void OnSourceMuteStateChange(void *param, calldata_t *data);
 	static void OnSourceAudioSyncOffsetChanged(void *param, calldata_t *data);
 	static void OnSourceAudioMixersChanged(void *param, calldata_t *data);
-
+	
 	static void OnSourceRename(void *param, calldata_t *data);
 
 	static void OnSourceFilterAdded(void *param, calldata_t *data);

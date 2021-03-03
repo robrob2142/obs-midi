@@ -54,7 +54,15 @@ int Utils::t_bar_mapper(int x)
 	int in_min = 0;
 	int in_max = 127;
 	int out_min = 0;
-	int out_max = 1024;
+	int out_max = 1000;
+	return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+}
+int Utils::t_bar_mapper_reverse(int x)
+{
+	int in_min = 0;
+	int in_max = 1000;
+	int out_min = 0;
+	int out_max = 127;
 	return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 bool Utils::is_number(const QString &s)

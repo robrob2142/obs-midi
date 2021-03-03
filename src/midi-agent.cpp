@@ -218,7 +218,6 @@ void MidiAgent::HandleInput(const rtmidi::message &message, void *userData)
 		return;
 	}
 	/*************Get Message parts***********/
-	self->sending = true;
 	MidiMessage *x = new MidiMessage();
 	x->set_message(message);
 	/***** Send Messages to emit function *****/
@@ -353,7 +352,7 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 {
 	blog(LOG_DEBUG, "OBS Event : %s \n AD: %s", event.updateType().toStdString().c_str(), obs_data_get_json(event.additionalFields()));
 	MidiHook *hook = get_midi_hook_if_exists(event);
-	if (!this->sending) {
+	//if (!this->sending) {
 		// ON EVENT TYPE Find matching hook, pull data from that hook, and do thing.
 		if (hook != NULL) {
 			MidiMessage *message = hook->get_message_from_hook();
@@ -449,6 +448,14 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 					this->send_message_to_midi_device((MidiMessage)*message);
 				}
 			}
+		} else if (event.updateType() == QString("TbarValueChanged")) {
+			for (int i = 0; i < this->midiHooks.size(); i++) {
+				if (this->midiHooks.at(i)->action == Utils::translate_action(ActionsClass::Actions::Move_T_Bar)) {
+				message = this->midiHooks.at(i)->get_message_from_hook();
+				message->value=(obs_data_get_int(event.additionalFields(),"value")<1000)?Utils::t_bar_mapper_reverse(obs_data_get_int(event.additionalFields(),"value")):0;
+				this->send_message_to_midi_device((MidiMessage)*message);
+				}
+			} 
 		} else if (event.updateType() == QString("SourceRenamed")) {
 			QString from = obs_data_get_string(event.additionalFields(), "previousName");
 			for (int i = 0; i < this->midiHooks.size(); i++) {
@@ -478,12 +485,11 @@ void MidiAgent::handle_obs_event(const RpcEvent &event)
 			GetDeviceManager().get()->reload();
 		}
 		delete (message);
-	} else {
-		this->sending = false;
-	}
+	//}
 }
 void MidiAgent::send_message_to_midi_device(const MidiMessage &message)
 {
+	sending=true;
 	if (message.message_type != "none") {
 		std::unique_ptr<rtmidi::message> hello = std::make_unique<rtmidi::message>();
 		if (message.message_type == "Control Change") {
@@ -494,4 +500,5 @@ void MidiAgent::send_message_to_midi_device(const MidiMessage &message)
 			this->midiout.send_message(hello->note_off(message.channel, message.NORC, message.value));
 		}
 	}
+	sending = false;
 }

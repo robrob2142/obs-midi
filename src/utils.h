@@ -170,6 +170,7 @@ class OBSActionsWidget;
 float mapper(int x);
 int mapper2(double x);
 int t_bar_mapper(int x);
+int t_bar_mapper_reverse(int x);
 bool is_number(const QString &s);
 bool isJSon(const QString &val);
 QString get_midi_message_type(const rtmidi::message &message);

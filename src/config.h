@@ -34,8 +34,6 @@ public slots:
 	void Load();
 	void Save();
 
-	
-
 private:
 	QString get_file_name();
 	QString GetConfigStore();

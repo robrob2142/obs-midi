@@ -30,9 +30,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "utils.h"
 #include "obs-midi.h"
 
-
-class OBSController : public QObject
-{
+class OBSController : public QObject {
 	Q_OBJECT
 	// BUTTON ACTIONS
 
@@ -42,15 +40,15 @@ public:
 
 private:
 	/**
-	* Variables
-	*/
+	 * Variables
+	 */
 	MidiHook *hook;
 	int midi_value;
 
 private:
 	/**
-	* Actions
-	*/
+	 * Actions
+	 */
 	void SetCurrentScene();
 	void SetPreviewScene();
 	void DisablePreview();
@@ -61,7 +59,7 @@ private:
 	void SetCurrentTransition();
 	void SetTransitionDuration();  // can also be used with cc
 	void SetSourceVisibility();    // doesn't exist??
-	void ToggleSourceVisibility(); //doesn't exist?
+	void ToggleSourceVisibility(); // doesn't exist?
 	void ToggleMute();
 	void SetMute();
 	void StartStopStreaming();

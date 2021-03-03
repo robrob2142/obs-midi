@@ -2,6 +2,6 @@
 #define VERSION_H
 
 #define GIT_BRANCH "master"
-#define GIT_COMMIT_HASH "a069655"
+#define GIT_COMMIT_HASH "689666d"
 
 #endif

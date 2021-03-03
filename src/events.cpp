@@ -191,6 +191,9 @@ void Events::FrontendEventHandler(enum obs_frontend_event event, void *private_d
 		owner->unhookTransitionPlaybackEvents();
 		owner->OnExit();
 		break;
+	case OBS_FRONTEND_EVENT_TBAR_VALUE_CHANGED:
+		owner->OnTBarValueChanged();
+		break;
 	}
 }
 void Events::broadcastUpdate(const char *updateType, obs_data_t *additionalFields = nullptr)
@@ -1562,4 +1565,12 @@ obs_data_t *Events::GetStats()
 	obs_data_set_double(stats, "memory-usage", memoryUsage);
 	obs_data_set_double(stats, "free-disk-space", freeDiskSpace);
 	return stats;
+}
+void Events::OnTBarValueChanged(){
+	int x = obs_frontend_get_tbar_position();
+	obs_data_t *value = obs_data_create();
+	obs_data_set_int(value, "value", x);	
+	broadcastUpdate("TbarValueChanged",value);
+	obs_data_release(value);
+	blog(LOG_INFO, "OBS_FRONTEND_EVENT_TBAR_VALUE_CHANGED: %i", x);
 }
