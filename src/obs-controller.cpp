@@ -131,7 +131,7 @@ void TransitionToProgram(MidiHook *hook)
 	}
 	(obs_frontend_preview_program_mode_active()) ? obs_frontend_preview_program_trigger_transition() : SetCurrentScene(hook);
 
-	state()._CurrentTransition = QString(obs_source_get_name(transition));
+	state()._CurrentTransition = QString( obs_source_get_name(transition));
 
 	obs_source_release(transition);
 }
