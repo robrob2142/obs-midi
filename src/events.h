@@ -215,3 +215,115 @@ private:
 	static void OnSceneItemSelected(void *param, calldata_t *data);
 	static void OnSceneItemDeselected(void *param, calldata_t *data);
 };
+class Event {
+public:
+	virtual void exec(){};
+	QString event_name;
+
+};
+class SourceDestroyed : public Event {
+};
+class SourceRemoved : public Event {
+};
+class SceneChanged : public Event {
+};
+class SceneListChanged : public Event {
+};
+class SceneCollectionChanged : public Event {
+};
+class SceneCollectionListChanged : public Event {
+};
+class TransitionChange : public Event {
+};
+class TransitionListChanged : public Event {
+};
+class ProfileChanged : public Event {
+};
+class ProfileListChanged : public Event {
+};
+class StreamStarting : public Event {
+};
+class StreamStarted : public Event {
+};
+class StreamStopping : public Event {
+};
+class StreamStopped : public Event {
+};
+class RecordingStarting : public Event {
+};
+class RecordingStarted : public Event {
+};
+class RecordingStopping : public Event {
+};
+class RecordingStopped : public Event {
+};
+class RecordingPaused : public Event {
+};
+class RecordingResumed : public Event {
+};
+class ReplayStarting : public Event {
+};
+class ReplayStarted : public Event {
+};
+class ReplayStopping : public Event {
+};
+class ReplayStopped : public Event {
+};
+class StudioModeSwitched : public Event {
+};
+class PreviewSceneChanged : public Event {
+};
+class Exiting : public Event {
+};
+class LoadingFinished : public Event {
+};
+class FrontendEvent : public Event {
+};
+class TransitionBegin : public Event {
+};
+class TransitionEnd : public Event {
+};
+class TransitionVideoEnd : public Event {
+};
+class SourceCreated : public Event {
+};
+class SourceDestroy : public Event {
+};
+class SourceVolumeChanged : public Event {
+	QString source_name;
+	float volume;
+};
+class SourceMuteStateChanged : public Event {
+};
+class SourceAudioSyncOffsetChanged : public Event {
+};
+class SourceAudioMixersChanged : public Event {
+};
+class SourceRenamed : public Event {
+};
+class SourceFilterAdded : public Event {
+};
+class SourceFilterRemoved : public Event {
+};
+class SourceFilterVisibilityChanged : public Event {
+};
+class SourceFilterOrderChanged : public Event {
+};
+class SceneReordered : public Event {
+};
+class SceneItemAdd : public Event {
+};
+class SceneItemDeleted : public Event {
+};
+class SceneItemVisibilityChanged : public Event {
+};
+class SceneItemLockChanged : public Event {
+};
+class SceneItemTransform : public Event {
+};
+class SceneItemSelected : public Event {
+};
+class SceneItemDeselected : public Event {
+};
+class SwitchScenes : public Event {
+};
