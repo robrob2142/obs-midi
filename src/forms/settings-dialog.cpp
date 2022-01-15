@@ -120,10 +120,11 @@ void PluginWindow::on_check_enabled_state_changed(int state) const
 		blog(LOG_INFO, "Item enabled: %s", selectedDeviceName.c_str());
 		const int devicePort = GetDeviceManager()->get_input_port_number(selectedDeviceName.c_str());
 		if (device == NULL) {
-			GetDeviceManager()->register_midi_device(devicePort);
+			device = GetDeviceManager()->register_midi_device(devicePort);
 		}
-		device->open_midi_input_port();
 		device->set_enabled(true);
+		device->open_midi_input_port();
+		
 		set_configure_title(QString::fromStdString(selectedDeviceName));
 		connect_midi_message_handler();
 	}
