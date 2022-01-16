@@ -57,6 +57,7 @@ set(obs-midi_SOURCES
 	src/device-manager.cpp
 	src/obs-controller.cpp
 	src/forms/settings-dialog.cpp
+	src/forms/midi_mapping_wizard.cpp
 	src/obs-midi.cpp
 	src/events.cpp
 	src/rpc/RpcEvent.cpp
@@ -71,6 +72,8 @@ list(APPEND obs-midi_HEADERS
 	src/device-manager.h
 	src/obs-controller.h
 	src/forms/settings-dialog.h
+	src/forms/midi_mapping_wizard.h
+
 	src/obs-midi.h
 	src/events.h
 	src/rpc/RpcEvent.h
@@ -79,7 +82,9 @@ list(APPEND obs-midi_HEADERS
 	src/Midi_hook.h
 	src/Midi_message.h)
 
-qt5_wrap_ui(obs_midi_UI_HEADERS src/forms/settings-dialog.ui)
+qt5_wrap_ui(obs_midi_UI_HEADERS 
+		src/forms/settings-dialog.ui
+		src/forms/midi_mapping_wizard.ui)
 
 add_library(obs-midi MODULE
 	${obs-midi_SOURCES}

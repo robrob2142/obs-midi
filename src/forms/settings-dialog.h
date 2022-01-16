@@ -12,9 +12,12 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 */
 #pragma once
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QWizard>
+#include <QtWidgets/QWizardPage>
 #include <vector>
 
 #include "ui_settings-dialog.h"
+#include "ui_midi_mapping_wizard.h"
 #include "../midi-agent.h"
 #include "../version.h"
 #include "../Midi_hook.h"
@@ -32,7 +35,7 @@ private slots:
 	void obs_actions_select(const QString &action) const;
 	void set_edit_mode();
 	void save_edit();
-
+	void add_new_mapping();
 	void reset_to_defaults() const;
 	void clear_actions_box(QLayout *layout)const;
 	void set_all_cell_colors(int row) const;
@@ -69,9 +72,19 @@ private:
 	void load_table() const;
 	void table_select(int selection);
 	void midi_message_select(MidiMapping *hook);
-private:
 	int editrow = -1;
 	bool editmode = false;
 	bool switching = false;
 	MidiMapping *edithook;
+};
+class WizardWindow : public QWizard {
+	Q_OBJECT
+public:
+	explicit WizardWindow(QWidget *parent);
+	~WizardWindow() override;
+
+private:
+	Ui::Wizard *wiz;
+
+
 };

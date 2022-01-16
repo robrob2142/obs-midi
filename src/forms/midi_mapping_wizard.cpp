@@ -22,8 +22,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 
 #include <obs-module.h>
 #include <QObject>
-#include "settings-dialog.h"
-#include "ui_settings-dialog.h"
 #include "ui_midi_mapping_wizard.h"
 #include "../device-manager.h"
 #include "../config.h"
