@@ -23,11 +23,19 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class WizardWindow : public QWizard {
 	Q_OBJECT
 public:
-	explicit WizardWindow(QWidget *parent);
+	
+	explicit WizardWindow(QWidget *parent, QString dn);
 	~WizardWindow() override;
 
+
+	void connect_midi_message_handler() const;
+	QString device_name;
+private slots:
+	void handle_midi_message(const MidiMessage &mess) const;
+	void disconnect_midi_message_handler() const;
+
 private:
-	Ui::Wizard *wiz;
+	Ui::Wizard *ui;
 
 
 };

@@ -17,7 +17,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <vector>
 
 #include "ui_settings-dialog.h"
-#include "ui_midi_mapping_wizard.h"
+#include "midi_mapping_wizard.h"
 #include "../midi-agent.h"
 #include "../version.h"
 #include "../Midi_hook.h"
@@ -26,13 +26,13 @@ class PluginWindow : public QDialog {
 public:
 	explicit PluginWindow(QWidget *parent);
 	~PluginWindow() override;
+	QString c_device;
+
 public slots:
 	void ToggleShowHide();
 private slots:
 	void on_check_enabled_state_changed(int state) const;
-	void on_device_select(const QString &curitem) const;
-	void handle_midi_message(const MidiMessage &mess) const;
-	void obs_actions_select(const QString &action) const;
+	void on_device_select(const QString &curitem);
 	void set_edit_mode();
 	void save_edit();
 	void add_new_mapping();
@@ -61,11 +61,9 @@ private:
 
 	//static QStringList translatelist(QStringList list);
 	
-	void add_midi_device(const QString &Name) const;
+	void add_midi_device(const QString &Name);
 	//void set_headers() const;
 	void set_configure_title(const QString &title) const;
-	void disconnect_midi_message_handler() const;
-	void connect_midi_message_handler() const;
 	bool map_exists() const;
 	bool verify_mapping() const;
 	void add_row_from_hook(const MidiMapping *hook) const;
@@ -76,15 +74,4 @@ private:
 	bool editmode = false;
 	bool switching = false;
 	MidiMapping *edithook;
-};
-class WizardWindow : public QWizard {
-	Q_OBJECT
-public:
-	explicit WizardWindow(QWidget *parent);
-	~WizardWindow() override;
-
-private:
-	Ui::Wizard *wiz;
-
-
 };
