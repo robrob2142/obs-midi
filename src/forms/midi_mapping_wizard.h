@@ -30,11 +30,14 @@ public:
 
 	void connect_midi_message_handler() const;
 	void setup_actions() const;
+	void reset_buttons();
 	QString device_name;
 private slots:
 	void handle_midi_message(const MidiMessage &mess) const;
 	void disconnect_midi_message_handler() const;
 	void page_handler(int);
+	void reset_midi_values();
+
 
 private:
 	Ui::Wizard *ui;

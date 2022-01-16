@@ -36,11 +36,10 @@ WizardWindow::WizardWindow(QWidget *parent, QString dn) : QWizard(parent), ui(ne
 	ui->setupUi(this);
 	device_name = dn;
 	ui->mapping_lbl_device_name->setText(dn);
-	auto devn = dn.toStdString().c_str();
-	connect_midi_message_handler();
 	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(page_handler(int)));
 
 	connect(this, SIGNAL(finished(int)), this, SLOT(disconnect_midi_message_handler()));
+	connect(ui->btn_reset, SIGNAL(pressed()),this, SLOT(reset_midi_values()));
 }
 WizardWindow::~WizardWindow()
 {
@@ -91,10 +90,29 @@ void WizardWindow::setup_actions() const
 	ui->cb_obs_output_action->setCurrentIndex(1);
 	ui->cb_obs_output_action->setCurrentIndex(0);
 }
-void WizardWindow::page_handler(int page) {
+void WizardWindow::reset_buttons() {
+	ui->btn_Listen_many->setChecked(false);
+	ui->btn_Listen_one->setChecked(false);
+}
+void WizardWindow::reset_midi_values()
+{
+
+	ui->sb_channel->setValue(0);
+	ui->sb_norc->setValue(0);
+	ui->slider_value->setValue(0);
+	ui->cb_mtype->setCurrentIndex(0);
+	ui->btn_Listen_one->setChecked(false);
+}
+void WizardWindow::page_handler(int page)
+{
 	blog(LOG_DEBUG, "page changed to %i", page);
 	switch (page) {
+	case 0:
+		reset_buttons();
+		connect_midi_message_handler();
+		break;
 	case 1:
+		disconnect_midi_message_handler();
 		setup_actions();
 		break;
 	}
