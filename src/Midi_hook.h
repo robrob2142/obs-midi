@@ -16,6 +16,10 @@ public:
 	MidiMessage *get_message_from_hook();
 	QString GetData();
 	void set_obs_action(obs_data_t *data);
+	void set_midi_data(int n, int c, QString mtype, int v);
+	void set_midi_data(obs_data_t *data);
+	void set_midi_data(int n, int c, QString mtype);
+	void save();
 	void EXE();
 	int channel = -1;     // midi channel
 	QString message_type; // Message Type

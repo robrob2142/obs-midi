@@ -24,7 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QObject>
 #include "ui_midi_mapping_wizard.h"
 #include "midi_mapping_wizard.h"
-
+#include "../Midi_hook.h"
 #include "../device-manager.h"
 #include "../config.h"
 #include "Macros.h"
@@ -128,6 +128,7 @@ void WizardWindow::finish_handler(int state) {
 		break;
 	case 1:
 		blog(LOG_DEBUG, "finished");
+		save_mapping();
 		break;
 
 	case 2:
@@ -159,3 +160,19 @@ void WizardWindow::clear_actions_box(QLayout *layout) const
 		delete layout;
 	}
 }
+
+void WizardWindow::save_mapping()
+{
+		auto *mm = new MidiMapping();
+	if (ui->check_use_value) {
+		mm->set_midi_data(ui->sb_norc->value(), ui->sb_channel->value(), ui->cb_mtype->currentText(), ui->slider_value->value());
+		mm->save();
+		return;
+	}
+	mm->set_midi_data(ui->sb_norc->value(), ui->sb_channel->value(), ui->cb_mtype->currentText());
+	mm->save();
+
+		
+
+}
+

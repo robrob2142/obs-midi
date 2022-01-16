@@ -38,6 +38,11 @@ public:
 	static Actions *make_action(QString action, MidiMapping *h, obs_data_t *data);
 	static Actions *make_action(QString action);
 	virtual QString get_action_string();
+	virtual obs_data_t *get_data(obs_data_t *data)
+	{
+		obs_data_set_string(data, "action", _action.toStdString().c_str());
+		return data;
+	};
 	virtual void set_data(obs_data_t *data){};
 	virtual void set_data(QString datastring){};
 	QString _action;
@@ -78,7 +83,12 @@ public:
 		_transition = QString(obs_data_get_string(data, "transition"));
 		_duration = obs_data_get_int(data, "duration");
 	}
-
+	obs_data_t *get_data(obs_data_t* data) override{
+		obs_data_set_string(data, "scene",_scene.toStdString().c_str());
+		obs_data_set_string(data, "transition",_transition.toStdString().c_str());
+		obs_data_set_int(data, "duration", _duration.value());
+		return data;
+	}
 	QGridLayout *set_widgets() override;
 	QComboBox *cb_transition;
 	QString _transition;

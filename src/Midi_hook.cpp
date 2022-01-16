@@ -191,6 +191,19 @@ void MidiMapping::set_obs_action(obs_data_t *data)
 	Actions AC(this);
 	actions = AC.make_action(action, this,data);
 }
+void MidiMapping::set_midi_data(int n,int c, QString mtype, int v){
+	norc = n;
+	message_type = mtype;
+	channel = c;
+	value = v;
+};
+void MidiMapping::set_midi_data(int n, int c, QString mtype)
+{
+	norc = n;
+	message_type = mtype;
+	channel = c;
+};
+
 void MidiMapping::EXE()
 {
 	actions->execute();

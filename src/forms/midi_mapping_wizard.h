@@ -25,6 +25,8 @@ class WizardWindow : public QWizard {
 public:
 	
 	explicit WizardWindow(QWidget *parent, QString dn);
+	explicit WizardWindow(QWidget *parent, MidiMapping map);
+
 	~WizardWindow() override;
 
 
@@ -42,6 +44,8 @@ private slots:
 	void select_actions(QString action);
 
 	void clear_actions_box(QLayout *layout) const;
+
+	void save_mapping();
 
 private:
 	Actions *ac;
