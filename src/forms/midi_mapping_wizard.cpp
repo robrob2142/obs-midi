@@ -38,6 +38,8 @@ WizardWindow::WizardWindow(QWidget *parent, QString dn) : QWizard(parent), ui(ne
 	ui->mapping_lbl_device_name->setText(dn);
 	auto devn = dn.toStdString().c_str();
 	connect_midi_message_handler();
+	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(page_handler(int)));
+
 	connect(this, SIGNAL(finished(int)), this, SLOT(disconnect_midi_message_handler()));
 }
 WizardWindow::~WizardWindow()
@@ -79,5 +81,21 @@ void WizardWindow::handle_midi_message(const MidiMessage &mess) const
 		ui->slider_value->setValue(mess.value);
 		ui->cb_mtype->setCurrentText(mess.message_type);
 		ui->btn_Listen_one->setChecked(false);
+	}
+}
+
+void WizardWindow::setup_actions() const
+{
+	ui->cb_obs_output_action->clear();
+	ui->cb_obs_output_action->addItems(Utils::TranslateActions());
+	ui->cb_obs_output_action->setCurrentIndex(1);
+	ui->cb_obs_output_action->setCurrentIndex(0);
+}
+void WizardWindow::page_handler(int page) {
+	blog(LOG_DEBUG, "page changed to %i", page);
+	switch (page) {
+	case 1:
+		setup_actions();
+		break;
 	}
 }
