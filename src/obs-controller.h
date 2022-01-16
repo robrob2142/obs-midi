@@ -31,7 +31,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 class Actions : public QObject {
 	Q_OBJECT
 public:
-	Actions(){};
+	Actions();
 	Actions(MidiMapping *_hook);
 	void set_hook(MidiMapping *_hook) { hook = _hook; }
 	virtual void execute(){};
@@ -45,7 +45,8 @@ public:
 	virtual void parse_data(obs_data_t *data) { _action = QString(obs_data_get_string(data, "action"));
 		_value.emplace(obs_data_get_int(data, "value"));
 	};
-
+	inline static QMap<QString, Actions *> _action_map;
+	static void make_map();
 	virtual QGridLayout *set_widgets()
 	{
 		QLabel *label = new QLabel("Nothing to configure");
@@ -58,9 +59,7 @@ public:
 protected:
 	MidiMapping *hook;
 
-private:
-	static void make_map();
-	inline static QMap<QString, Actions *> _action_map;
+	
 };
 
 class SceneActions : public Actions {

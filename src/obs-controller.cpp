@@ -28,8 +28,16 @@ Actions::Actions(MidiMapping *_hook) : hook{_hook}
 	if (_action_map.isEmpty())
 		make_map();
 }
+Actions::Actions() 
+{
+
+}
 void Actions::make_map()
 {
+	if (!_action_map.isEmpty())
+		return;
+	_action_map.insert(QString("Trigger_Hotkey"), new TriggerHotkey());
+
 	_action_map.insert(QString("Set_Current_Scene"), new SetCurrentScene());
 	_action_map.insert(QString("Reset_Scene_Item"), new ResetSceneItem());
 	_action_map.insert(QString("Toggle_Mute"), new ToggleMute());
@@ -80,7 +88,6 @@ void Actions::make_map()
 	_action_map.insert(QString("Enable_Preview"), new EnablePreview());
 	_action_map.insert(QString("Toggle_Fade_Source"), new make_opacity_filter());
 	_action_map.insert(QString("Trigger_Hotkey_By_Name"), new TriggerHotkey());
-	_action_map.insert(QString("Trigger_Hotkey"), new TriggerHotkey());
 }
 
 Actions *Actions::make_action(QString action, MidiMapping *h, obs_data_t *data)
@@ -92,6 +99,7 @@ Actions *Actions::make_action(QString action, MidiMapping *h, obs_data_t *data)
 }
 Actions *Actions::make_action(QString action)
 {
+	blog(LOG_DEBUG, "MAKE_ACTION, %s", action.toStdString().c_str());
 	Actions *act = _action_map[action];
 	return act;
 }

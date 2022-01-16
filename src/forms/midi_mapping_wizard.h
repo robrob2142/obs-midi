@@ -15,7 +15,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QtWidgets/QWizard>
 #include <QtWidgets/QWizardPage>
 #include <vector>
-
+#include "../obs-controller.h"
 #include "ui_midi_mapping_wizard.h"
 #include "../midi-agent.h"
 #include "../version.h"
@@ -37,9 +37,14 @@ private slots:
 	void disconnect_midi_message_handler() const;
 	void page_handler(int);
 	void reset_midi_values();
+	void finish_handler(int);
 
+	void select_actions(QString action);
+
+	void clear_actions_box(QLayout *layout) const;
 
 private:
+	Actions *ac;
 	Ui::Wizard *ui;
 
 

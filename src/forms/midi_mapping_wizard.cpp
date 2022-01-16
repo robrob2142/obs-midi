@@ -36,9 +36,11 @@ WizardWindow::WizardWindow(QWidget *parent, QString dn) : QWizard(parent), ui(ne
 	ui->setupUi(this);
 	device_name = dn;
 	ui->mapping_lbl_device_name->setText(dn);
+	ac = new Actions();
+	ac->make_map();
 	connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(page_handler(int)));
 
-	connect(this, SIGNAL(finished(int)), this, SLOT(disconnect_midi_message_handler()));
+	connect(this, SIGNAL(finished(int)), this, SLOT(finish_handler(int)));
 	connect(ui->btn_reset, SIGNAL(pressed()),this, SLOT(reset_midi_values()));
 }
 WizardWindow::~WizardWindow()
@@ -89,6 +91,7 @@ void WizardWindow::setup_actions() const
 	ui->cb_obs_output_action->addItems(Utils::TranslateActions());
 	ui->cb_obs_output_action->setCurrentIndex(1);
 	ui->cb_obs_output_action->setCurrentIndex(0);
+	connect(ui->cb_obs_output_action, SIGNAL(currentTextChanged(QString)), this, SLOT(select_actions(QString)));
 }
 void WizardWindow::reset_buttons() {
 	ui->btn_Listen_many->setChecked(false);
@@ -115,5 +118,44 @@ void WizardWindow::page_handler(int page)
 		disconnect_midi_message_handler();
 		setup_actions();
 		break;
+	}
+}
+void WizardWindow::finish_handler(int state) {
+	blog(LOG_DEBUG, "Finished with state");
+	switch (state) {
+	case 0:
+		blog(LOG_DEBUG, "canceled");
+		break;
+	case 1:
+		blog(LOG_DEBUG, "finished");
+		break;
+
+	case 2:
+		blog(LOG_DEBUG, "%i", state);
+		break;
+	}
+	disconnect_midi_message_handler();
+}
+void WizardWindow::select_actions(QString action) {
+	blog(LOG_DEBUG, "Action Selected, %s", action.toStdString().c_str());
+	clear_actions_box(ui->box_action->layout());
+	auto tempaction = ac->make_action(Utils::untranslate(action));
+	ui->box_action->setLayout(tempaction->set_widgets());
+}
+
+void WizardWindow::clear_actions_box(QLayout *layout) const
+{
+	if (layout) {
+		QLayoutItem *item;
+		while ((item = layout->takeAt(0))) {
+			if (item->layout()) {
+				clear_actions_box(item->layout());
+				delete item->layout();
+			}
+			if (item->widget()) {
+				delete item->widget();
+			}
+		}
+		delete layout;
 	}
 }
