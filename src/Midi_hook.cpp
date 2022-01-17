@@ -202,7 +202,8 @@ void MidiMapping::set_midi_data(int n, int c, QString mtype)
 	norc = n;
 	message_type = mtype;
 	channel = c;
-};
+}
+void MidiMapping::save(){};
 
 void MidiMapping::EXE()
 {

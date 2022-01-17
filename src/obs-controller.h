@@ -27,6 +27,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include <QSpinBox>
 #include <QLayout>
 #include <QCheckBox>
+#include "qcombopair.h"
 
 class Actions : public QObject {
 	Q_OBJECT

@@ -230,10 +230,15 @@ QGridLayout *TransitionToProgram::set_widgets()
 
 	auto scenelist = Utils::get_scene_names();
 	scenelist.prepend("Preview Scene");
-	cb_scene = Utils::make_combo(scenelist);
+	auto scb = new QComboPair();
+	scb->addItems(scenelist);
+	scb->setText("Scene *");
+	auto tcb = new QComboPair();
+	tcb->setText("Transition *");
 	auto transition_list = Utils::GetTransitionsList();
 	transition_list.prepend("Current Transition");
-	cb_transition = Utils::make_combo(transition_list);
+	tcb->addItems(transition_list);
+
 	enable_duration = new QCheckBox("Enable");
 	duration = new QSpinBox();
 	duration->setValue(300);
@@ -243,10 +248,8 @@ QGridLayout *TransitionToProgram::set_widgets()
 	duration->setEnabled(false);
 
 	auto lay = new QGridLayout();
-	lay->addWidget(new QLabel("Scene *"), 0, 0);
-	lay->addWidget(cb_scene, 0, 1);
-	lay->addWidget(new QLabel("Transition *"), 1, 0);
-	lay->addWidget(cb_transition, 1, 1);
+	lay->addWidget(scb);
+	lay->addWidget(tcb);
 	lay->addWidget(new QLabel("Duration *"), 2, 0);
 	lay->addWidget(enable_duration, 2, 1);
 	lay->addWidget(duration, 2, 2);

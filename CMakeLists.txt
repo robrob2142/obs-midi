@@ -63,7 +63,9 @@ set(obs-midi_SOURCES
 	src/rpc/RpcEvent.cpp
 	src/forms/Macros.cpp
 	src/Midi_hook.cpp
-	src/Midi_message.cpp)
+	src/Midi_message.cpp
+	src/qcombopair.cpp
+	)
 
 list(APPEND obs-midi_HEADERS
 	src/utils.h
@@ -73,14 +75,15 @@ list(APPEND obs-midi_HEADERS
 	src/obs-controller.h
 	src/forms/settings-dialog.h
 	src/forms/midi_mapping_wizard.h
-
 	src/obs-midi.h
 	src/events.h
 	src/rpc/RpcEvent.h
 	src/forms/Macros.h
 	src/macro-helpers.h
 	src/Midi_hook.h
-	src/Midi_message.h)
+	src/Midi_message.h
+	src/qcombopair.h
+	)
 
 qt5_wrap_ui(obs_midi_UI_HEADERS 
 		src/forms/settings-dialog.ui

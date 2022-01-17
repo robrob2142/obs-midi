@@ -20,6 +20,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "../midi-agent.h"
 #include "../version.h"
 #include "../Midi_hook.h"
+#include "../qcombopair.h"
+
 class WizardWindow : public QWizard {
 	Q_OBJECT
 public:

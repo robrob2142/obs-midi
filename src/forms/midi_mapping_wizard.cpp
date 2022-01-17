@@ -42,6 +42,19 @@ WizardWindow::WizardWindow(QWidget *parent, QString dn) : QWizard(parent), ui(ne
 
 	connect(this, SIGNAL(finished(int)), this, SLOT(finish_handler(int)));
 	connect(ui->btn_reset, SIGNAL(pressed()),this, SLOT(reset_midi_values()));
+	auto np = new QWizardPage();
+	this->addPage(np);
+	auto lay = new QGridLayout();
+	auto qcp = new QComboPair();
+	auto wid = qcp->getWidget();
+	qcp->setText("testing");
+	qcp->addItem("one");
+	qcp->addItem("2");
+	qcp->addItem("Three");
+	lay->addWidget(wid);
+	np->setLayout(lay);
+
+
 }
 WizardWindow::~WizardWindow()
 {
