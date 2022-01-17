@@ -248,8 +248,8 @@ QGridLayout *TransitionToProgram::set_widgets()
 	duration->setEnabled(false);
 
 	auto lay = new QGridLayout();
-	lay->addWidget(scb);
-	lay->addWidget(tcb);
+	lay->addWidget(scb,0,0,1,4);
+	lay->addWidget(tcb, 1, 0, 1, 4);
 	lay->addWidget(new QLabel("Duration *"), 2, 0);
 	lay->addWidget(enable_duration, 2, 1);
 	lay->addWidget(duration, 2, 2);
