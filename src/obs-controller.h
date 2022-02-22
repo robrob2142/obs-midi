@@ -76,5 +76,6 @@ void play_media(MidiHook *hook);
 void next_media(MidiHook *hook);
 void prev_media(MidiHook *hook);
 void make_opacity_filter(MidiHook *hook);
+void Send_Keypress(MidiHook *hook);
 int time_to_sleep(int duration);
 

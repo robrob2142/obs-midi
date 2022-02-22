@@ -590,3 +590,34 @@ void make_opacity_filter(MidiHook *hook)
 	obs_sceneitem_t *item = Utils::GetSceneItemFromName(scene, hook->source);
 	(obs_sceneitem_visible(item)) ? fade_out_scene_item(hook) : fade_in_scene_item(hook);
 }
+
+void Send_Keypress(MidiHook *hook)
+{
+
+	// This structure will be used to create the keyboard
+	// input event.
+
+	INPUT ip;
+
+	// Pause for 5 seconds.
+
+	// Set up a generic keyboard event.
+	ip.type = INPUT_KEYBOARD;
+	ip.ki.wScan = 0; // hardware scan code for key
+	ip.ki.time = 0;
+	ip.ki.dwExtraInfo = 0;
+	if (hook->message_type == "Note On") {
+		// Press the "F13" key
+		ip.ki.wVk = 0x7C;  // virtual-key code for the "F13" key
+		ip.ki.dwFlags = 0; // 0 for key press
+		SendInput(1, &ip, sizeof(INPUT));
+	} else {
+		ip.ki.wVk = 0x7C; // virtual-key code for the "F13" key
+
+		// Release the "A" key
+		ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
+		SendInput(1, &ip, sizeof(INPUT));
+	}
+	// Exit normally
+	
+}

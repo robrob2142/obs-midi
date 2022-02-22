@@ -43,7 +43,6 @@ class ActionsClass : public QObject {
 	Q_OBJECT
 public:
 	enum Actions {
-		Toggle_Fade_Source,
 		Disable_Preview,
 		Disable_Source_Filter,
 		Do_Transition,
@@ -104,7 +103,9 @@ public:
 		Toggle_Start_Stop_Replay_Buffer,
 		Toggle_Start_Stop_Streaming,
 		Trigger_Hotkey_By_Name,
-		Unpause_Recording
+		Unpause_Recording,
+		Toggle_Fade_Source,
+		Send_Keypress
 	};
 	Q_ENUM(Actions)
 	
@@ -209,7 +210,9 @@ const QList<ActionsClass::Actions> AllActions_raw = {
 	ActionsClass::Actions::Set_Source_Rotation,
 	ActionsClass::Actions::Set_Source_Scale,
 	ActionsClass::Actions::Trigger_Hotkey_By_Name,
-	ActionsClass::Toggle_Fade_Source,
+	ActionsClass::Actions::Toggle_Fade_Source,
+	ActionsClass::Actions::Send_Keypress
+
 };
 const QList<ActionsClass::Actions> not_ready_actions{
 	ActionsClass::Actions::Set_Current_Scene_Collection,
