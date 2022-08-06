@@ -20,6 +20,7 @@ int MidiMessage::get_midi_note_or_control(const libremidi::message &mess)
 	case libremidi::message_type::POLY_PRESSURE:
 		break;
 	case libremidi::message_type::PROGRAM_CHANGE:
+		bytetopullfrom = 1;
 		break;
 	case libremidi::message_type::AFTERTOUCH:
 		break;
@@ -77,8 +78,7 @@ int MidiMessage::get_midi_value(const libremidi::message &mess)
 		bytetopullfrom = 2;
 		break;
 	case libremidi::message_type::PROGRAM_CHANGE:
-		bytetopullfrom = 1;
-		break;
+		return 0xFF;
 	case libremidi::message_type::POLY_PRESSURE:
 		break;
 	case libremidi::message_type::AFTERTOUCH:
